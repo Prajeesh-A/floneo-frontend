@@ -78,116 +78,154 @@ export function PropertiesPanel({
   selectedElement,
   currentPage,
   showCanvasProperties,
-  // ...other props...
-  // General properties function
-  const renderGeneralProperties = () => {
-    if (!selectedElement) return null;
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>General Properties</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Alignment */}
-          <div>
-            <Label>Alignment</Label>
-            <div className="flex gap-1 mb-2">
-              <Button size="sm" variant="outline" onClick={() => onUpdateElement("align", "left")}>Left</Button>
-              <Button size="sm" variant="outline" onClick={() => onUpdateElement("align", "center")}>H Center</Button>
-              <Button size="sm" variant="outline" onClick={() => onUpdateElement("align", "right")}>Right</Button>
-            </div>
-            <div className="flex gap-1">
-              <Button size="sm" variant="outline" onClick={() => onUpdateElement("valign", "top")}>Top</Button>
-              <Button size="sm" variant="outline" onClick={() => onUpdateElement("valign", "center")}>V Center</Button>
-              <Button size="sm" variant="outline" onClick={() => onUpdateElement("valign", "bottom")}>Bottom</Button>
-            </div>
-          </div>
-          {/* Position */}
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <Label>X Position</Label>
-              <Input type="number" value={selectedElement.x} onChange={e => onUpdateElementTransform("x", Number(e.target.value))} />
-            </div>
-            <div>
-              <Label>Y Position</Label>
-              <Input type="number" value={selectedElement.y} onChange={e => onUpdateElementTransform("y", Number(e.target.value))} />
-            </div>
-          </div>
-          {/* Rotation & Flip */}
-          <div className="flex gap-2 items-center">
-            <Label>Rotation</Label>
-            <Input type="number" value={selectedElement.rotation} onChange={e => onUpdateElementTransform("rotation", Number(e.target.value))} />
-            <Button size="sm" variant="outline" onClick={() => onUpdateElement("flipH", !(selectedElement.properties?.flipH))}>Flip H</Button>
-            <Button size="sm" variant="outline" onClick={() => onUpdateElement("flipV", !(selectedElement.properties?.flipV))}>Flip V</Button>
-          </div>
-          {/* Layout / Dimensions */}
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <Label>Width</Label>
-              <Input type="number" value={selectedElement.width} onChange={e => onUpdateElementTransform("width", Number(e.target.value))} />
-            </div>
-            <div>
-              <Label>Height</Label>
-              <Input type="number" value={selectedElement.height} onChange={e => onUpdateElementTransform("height", Number(e.target.value))} />
-            </div>
-          </div>
-          {/* Appearance */}
-          <div>
-            <Label>Opacity</Label>
-            <Slider value={[selectedElement.opacity]} onValueChange={([v]) => onUpdateElementTransform("opacity", v)} min={0} max={100} step={1} />
-          </div>
-          <div>
-            <Label>Corner Radius</Label>
-            <Input type="number" value={selectedElement.properties?.borderRadius ?? 0} onChange={e => onUpdateElement("borderRadius", Number(e.target.value))} />
-          </div>
-          {/* Fill */}
-          <div>
-            <Label>Fill Color</Label>
-            <Input type="text" value={selectedElement.properties?.fillColor ?? "#FFFFFF"} onChange={e => onUpdateElement("fillColor", e.target.value)} />
-            <Label>Fill Opacity</Label>
-            <Slider value={[selectedElement.properties?.fillOpacity ?? 100]} onValueChange={([v]) => onUpdateElement("fillOpacity", v)} min={0} max={100} step={1} />
-            <Button size="sm" variant="outline" onClick={() => onUpdateElement("showFill", !(selectedElement.properties?.showFill))}>{selectedElement.properties?.showFill ? <Eye /> : <EyeOff />}</Button>
-            <Button size="sm" variant="outline" onClick={() => onUpdateElement("addFill", true)}>+</Button>
-            <Button size="sm" variant="outline" onClick={() => onUpdateElement("removeFill", true)}>-</Button>
-          </div>
-          {/* Stroke */}
-          <div>
-            <Label>Stroke Color</Label>
-            <Input type="text" value={selectedElement.properties?.strokeColor ?? "#FFFFFF"} onChange={e => onUpdateElement("strokeColor", e.target.value)} />
-            <Label>Stroke Opacity</Label>
-            <Slider value={[selectedElement.properties?.strokeOpacity ?? 100]} onValueChange={([v]) => onUpdateElement("strokeOpacity", v)} min={0} max={100} step={1} />
-            <Button size="sm" variant="outline" onClick={() => onUpdateElement("showStroke", !(selectedElement.properties?.showStroke))}>{selectedElement.properties?.showStroke ? <Eye /> : <EyeOff />}</Button>
-            <Button size="sm" variant="outline" onClick={() => onUpdateElement("addStroke", true)}>+</Button>
-            <Button size="sm" variant="outline" onClick={() => onUpdateElement("removeStroke", true)}>-</Button>
-            <Label>Stroke Position</Label>
-            <Select value={selectedElement.properties?.strokePosition ?? "inside"} onValueChange={v => onUpdateElement("strokePosition", v)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="inside">Inside</SelectItem>
-                <SelectItem value="outside">Outside</SelectItem>
-                <SelectItem value="center">Center</SelectItem>
-              </SelectContent>
-            </Select>
-            <Label>Stroke Weight</Label>
-            <Input type="number" value={selectedElement.properties?.strokeWeight ?? 1} onChange={e => onUpdateElement("strokeWeight", Number(e.target.value))} />
-          </div>
-          {/* Effects */}
-          <div>
-            <Label>Effects</Label>
-            <div className="flex gap-2">
-              <Button size="sm" variant={selectedElement.properties?.dropShadow ? "default" : "outline"} onClick={() => onUpdateElement("dropShadow", !(selectedElement.properties?.dropShadow))}>Drop Shadow</Button>
-              <Button size="sm" variant={selectedElement.properties?.backgroundBlur ? "default" : "outline"} onClick={() => onUpdateElement("backgroundBlur", !(selectedElement.properties?.backgroundBlur))}>Background Blur</Button>
-              <Button size="sm" variant="outline" onClick={() => onUpdateElement("addEffect", true)}>+</Button>
-              <Button size="sm" variant="outline" onClick={() => onUpdateElement("removeEffect", true)}>-</Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
-  };
+  onUpdateElement,
+  onUpdateElementTransform,
+  onUpdateCanvasBackground,
+  onDeleteElement,
+  onDuplicateElement,
+  onToggleElementVisibility,
+  onToggleElementLock,
+  onMoveElementLayer,
+}: PropertiesPanelProps) {
+  const renderCanvasProperties = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Palette className="w-4 h-4" />
+          Canvas Background
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div>
+          <Label>Background Type</Label>
+          <Select
+            value={currentPage?.canvasBackground.type || "color"}
+            onValueChange={(value: "color" | "gradient" | "image") => onUpdateCanvasBackground({ type: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="color">Solid Color</SelectItem>
+              <SelectItem value="gradient">Gradient</SelectItem>
+              <SelectItem value="image">Image</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-  // ...existing code...
+        {currentPage?.canvasBackground.type === "color" && (
+          <div>
+            <Label>Background Color</Label>
+            <div className="flex gap-2">
+              <Input
+                type="color"
+                value={currentPage.canvasBackground.color || "#ffffff"}
+                onChange={(e) => onUpdateCanvasBackground({ color: e.target.value })}
+                className="w-16 h-10 p-1 border rounded"
+              />
+              <Input
+                type="text"
+                value={currentPage.canvasBackground.color || "#ffffff"}
+                onChange={(e) => onUpdateCanvasBackground({ color: e.target.value })}
+                placeholder="#ffffff"
+                className="flex-1"
+              />
+            </div>
+          </div>
+        )}
+
+        {currentPage?.canvasBackground.type === "gradient" && (
+          <div className="space-y-3">
+            <div>
+              <Label>Gradient Type</Label>
+              <Select
+                value={currentPage.canvasBackground.gradient?.type || "linear"}
+                onValueChange={(value: "linear" | "radial") =>
+                  onUpdateCanvasBackground({
+                    gradient: {
+                      ...currentPage.canvasBackground.gradient,
+                      type: value,
+                      colors: currentPage.canvasBackground.gradient?.colors || ["#ffffff", "#000000"],
+                    },
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="linear">Linear</SelectItem>
+                  <SelectItem value="radial">Radial</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {currentPage.canvasBackground.gradient?.type === "linear" && (
+              <div>
+                <Label>Direction</Label>
+                <Select
+                  value={currentPage.canvasBackground.gradient?.direction || "45deg"}
+                  onValueChange={(value) =>
+                    onUpdateCanvasBackground({
+                      gradient: {
+                        ...currentPage.canvasBackground.gradient,
+                        direction: value,
+                        colors: currentPage.canvasBackground.gradient?.colors || ["#ffffff", "#000000"],
+                      },
+                    })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0deg">Top to Bottom</SelectItem>
+                    <SelectItem value="90deg">Left to Right</SelectItem>
+                    <SelectItem value="45deg">Diagonal ↗</SelectItem>
+                    <SelectItem value="135deg">Diagonal ↖</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <div>
+              <Label>Color 1</Label>
+              <div className="flex gap-2">
+                <Input
+                  type="color"
+                  value={currentPage.canvasBackground.gradient?.colors?.[0] || "#ffffff"}
+                  onChange={(e) => {
+                    const colors = [...(currentPage.canvasBackground.gradient?.colors || ["#ffffff", "#000000"])]
+                    colors[0] = e.target.value
+                    onUpdateCanvasBackground({
+                      gradient: {
+                        ...currentPage.canvasBackground.gradient,
+                        colors,
+                        type: currentPage.canvasBackground.gradient?.type || "linear",
+                      },
+                    })
+                  }}
+                  className="w-16 h-10 p-1 border rounded"
+                />
+                <Input
+                  type="text"
+                  value={currentPage.canvasBackground.gradient?.colors?.[0] || "#ffffff"}
+                  onChange={(e) => {
+                    const colors = [...(currentPage.canvasBackground.gradient?.colors || ["#ffffff", "#000000"])]
+                    colors[0] = e.target.value
+                    onUpdateCanvasBackground({
+                      gradient: {
+                        ...currentPage.canvasBackground.gradient,
+                        colors,
+                        type: currentPage.canvasBackground.gradient?.type || "linear",
+                      },
+                    })
+                  }}
+                  className="flex-1"
+                />
+              </div>
+            </div>
+
             <div>
               <Label>Color 2</Label>
               <div className="flex gap-2">

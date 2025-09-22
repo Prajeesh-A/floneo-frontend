@@ -1254,7 +1254,7 @@ export default function CanvasPage() {
               style={{ ...style, border: "1px solid #d1d5db" }}
               className="px-3 py-2 w-full h-full"
               value={element.properties.value}
-              disabled
+              readOnly
             >
               <option>{element.properties.placeholder || "Select option"}</option>
               {element.properties.options?.map((option: string, index: number) => (
@@ -2428,7 +2428,7 @@ export default function CanvasPage() {
             selectedElement={selectedElement}
             selectedElements={selectedElements}
             selectedGroup={selectedGroup} // Pass selectedGroup to PropertiesPanel
-            currentPage={currentPage ?? null}
+            currentPage={currentPage}
             showCanvasProperties={showCanvasProperties}
             onUpdateElement={updateElementProperty}
             onUpdateElementTransform={updateElementTransform}
